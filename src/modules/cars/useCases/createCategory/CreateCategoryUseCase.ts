@@ -1,19 +1,28 @@
-import { Category } from "../../model/Category";
-import { ICategoriesRepository } from "../../repositories/implementations/ICategoriesRepository";
+import { inject, injectable } from "tsyringe";
+
+import { AppError } from "@errors/AppError";
+import { Category } from "@modules/cars/infra/typeorm/entities/Category";
+import { ICategoriesRepository } from "@modules/cars/repositories/ICategoriesRepository";
 
 interface IRequest {
   name: string;
   description: string;
 }
 
+@injectable()
 export class CreateCategoryUseCase {
-  constructor(private categoriesRepository: ICategoriesRepository) {}
+  constructor(
+    @inject("ICategoriesRepository")
+    private categoriesRepository: ICategoriesRepository
+  ) {}
 
-  execute({ name, description }: IRequest): Category {
-    const categoryAlreadyExist = this.categoriesRepository.findByName(name);
+  async execute({ name, description }: IRequest): Promise<Category> {
+    const categoryAlreadyExist = await this.categoriesRepository.findByName(
+      name
+    );
 
     if (categoryAlreadyExist) {
-      throw new Error("Category already exists");
+      throw new AppError("Category already exists");
     }
 
     return this.categoriesRepository.create({ name, description });

@@ -30,4 +30,10 @@ export class SpecificationsRepository implements ISpecificationsRepository {
 
     return specification;
   }
+
+  async findByIds(ids: string[]): Promise<Specification[]> {
+    const specifications = await this.repository.findByIds(ids);
+
+    return specifications;
+  }
 }

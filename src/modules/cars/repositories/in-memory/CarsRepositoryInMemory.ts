@@ -20,8 +20,13 @@ export class CarsRepositoryInMemory implements ICarsRepository {
   }: ICreateCarDto): Promise<Car> {
     const car = new Car();
 
+    if (id) {
+      Object.assign(car, {
+        id,
+      });
+    }
+
     Object.assign(car, {
-      id,
       name,
       license_plate,
       fine_amount,
@@ -57,5 +62,10 @@ export class CarsRepositoryInMemory implements ICarsRepository {
 
   async findById(id: string): Promise<Car> {
     return this.cars.find((car) => car.id === id);
+  }
+
+  async updateAvailable(id: string, available: boolean): Promise<void> {
+    const findIndex = this.cars.findIndex((car) => car.id === id);
+    this.cars[findIndex].available = available;
   }
 }

@@ -39,6 +39,8 @@ describe("Create user", () => {
 
     await createUserUseCase.execute(user);
 
-    expect(createUserUseCase.execute(user)).rejects.toBeInstanceOf(AppError);
+    expect(createUserUseCase.execute(user)).rejects.toEqual(
+      new AppError("User already exists")
+    );
   });
 });
